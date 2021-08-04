@@ -28,7 +28,6 @@ const options = {
     enabled: false,
   },
   xaxis: {
-    type: 'datetime',
     axisBorder: {
       color: theme.colors.gray[600]
     },
@@ -73,13 +72,25 @@ export default function Dashboard() {
             <Text fontSize="lg" mb="4">
               Inscritos da Semana
             </Text>
-            <Chart type='area' height={168} options={options} series={series} />
+            <Chart type='area' height={168} options={{
+              ...options,
+              xaxis: {
+                ...options.xaxis,
+                type: 'datetime'
+              }
+            }} series={series} />
           </Box>
           <Box p="8" bg="gray.800" borderRadius="8">
             <Text fontSize="lg" mb="4">
               Taxa de Abertura
             </Text>
-            <Chart type='area' height={168} options={options} series={series} />
+            <Chart type='area' height={168} options={{
+              ...options,
+              xaxis: {
+                ...options.xaxis,
+                type: 'datetime'
+              }
+            }} series={series} />
           </Box>
         </SimpleGrid>
       </Flex>
