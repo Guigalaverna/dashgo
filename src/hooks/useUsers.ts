@@ -1,7 +1,6 @@
 import { useQuery } from "react-query";
 import { api } from "../services/api";
 
-
 interface User {
   id: string;
   name: string;
@@ -12,8 +11,21 @@ interface User {
 interface ApiResponse {
   users: User[];
 }
-export async function getUsersList(): Promise<User[]> {
-  const { data } = await api.get<ApiResponse>("/users");
+
+interface GetUserListResponse {
+  totalCount: number;
+  users: User[];
+}
+
+export async function getUsersList(page: number): Promise<GetUserListResponse> {
+  const { data, headers } = await api.get<ApiResponse>("/users", {
+    params: {
+      page,
+    },
+  });
+
+  const totalCount = Number(headers["x-total-count"]);
+
   const users = data.users.map((user) => {
     return {
       ...user,
@@ -25,11 +37,11 @@ export async function getUsersList(): Promise<User[]> {
     };
   });
 
-  return users;
+  return { users, totalCount };
 }
 
-export function useUsers() {
-  return useQuery("users", getUsersList, {
+export function useUsers(page: number) {
+  return useQuery(['users', page], () => getUsersList(page), {
     staleTime: 1000 * 5, // 5 seconds
   });
 }
